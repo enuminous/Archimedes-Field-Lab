@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Archimedes Engine — Field-Native Lab</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <div id="app">
+    <canvas id="viewport" aria-label="Archimedes 3D laboratory viewport"></canvas>
+
+    <header class="topbar glass">
+      <div><strong>ARCHIMEDES ENGINE</strong><span>FIELD-NATIVE LAB</span></div>
+      <div class="status"><span id="modeBadge">EXPLORE</span><span id="simBadge">SIM RUNNING</span></div>
+    </header>
+
+    <aside class="palette glass" aria-label="Build palette">
+      <h2>BUILD PALETTE</h2>
+      <button data-kind="crate">▣ Structures</button>
+      <button data-kind="pendulum">◒ Mechanics</button>
+      <button data-kind="mirror">△ Optics</button>
+      <button data-kind="beaker">⌬ Chemistry</button>
+      <button data-kind="wave">∿ Waves</button>
+      <button data-kind="coil">ϟ Electricity</button>
+      <button data-kind="qubit">Ψ Quantum</button>
+      <button data-kind="efmw">◎ EFMW</button>
+      <div class="help">B: build mode<br>WASD: move<br>Mouse: look<br>Click: place/select<br>R: rotate<br>X: delete<br>M: measure<br>Space: pause</div>
+    </aside>
+
+    <aside class="analysis glass">
+      <div class="tabs">
+        <button class="active" data-tab="classical">Classical</button>
+        <button data-tab="quantum">Quantum</button>
+        <button data-tab="gravity">Gravity</button>
+        <button data-tab="efmw">EFMW</button>
+      </div>
+      <section id="panel"></section>
+    </aside>
+
+    <div class="crosshair">+</div>
+
+    <footer class="toolbar glass">
+      <button id="buildBtn">Build</button>
+      <button id="rotateBtn">Rotate</button>
+      <button id="measureBtn">Measure</button>
+      <button id="pauseBtn">Pause</button>
+      <button id="resetBtn">Reset Lab</button>
+    </footer>
+
+    <div id="toast" class="toast glass" aria-live="polite"></div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
