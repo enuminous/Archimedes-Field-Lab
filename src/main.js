@@ -40,8 +40,10 @@ function createComponent(kind,ghost=false){
   if(kind==='crate') g.add(new THREE.Mesh(new THREE.BoxGeometry(1,1,1),mat(0x4a6b76)));
   if(kind==='pendulum'){
     const frame=new THREE.Mesh(new THREE.BoxGeometry(1.5,.08,.08),mat(0x6d8790));frame.position.y=1.5;g.add(frame);
-    const rod=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,1.3,12),mat(0xbac8cc));rod.position.y=.84;g.add(rod);
-    const bob=new THREE.Mesh(new THREE.SphereGeometry(.18,20,12),mat(0xb5c7cf));bob.position.y=.2;g.add(bob); g.userData.physics={type:'pendulum',theta:.38,omega:0,length:1.3,damping:.035};
+    const arm=new THREE.Group();arm.position.y=1.5;
+    const rod=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,1.3,12),mat(0xbac8cc));rod.position.y=-.65;arm.add(rod);
+    const bob=new THREE.Mesh(new THREE.SphereGeometry(.18,20,12),mat(0xb5c7cf));bob.position.y=-1.3;arm.add(bob);g.add(arm);
+    g.userData.arm=arm;g.userData.physics={type:'pendulum',theta:.38,omega:0,length:1.3,damping:.035};
   }
   if(kind==='mirror'){
     const stand=new THREE.Mesh(new THREE.CylinderGeometry(.06,.08,.7,12),mat(0x354d59));stand.position.y=.35;g.add(stand);
@@ -99,10 +101,10 @@ document.querySelectorAll('.palette button').forEach(b=>b.addEventListener('clic
 document.querySelector('#buildBtn').onclick=toggleBuild; document.querySelector('#rotateBtn').onclick=rotateCurrent; document.querySelector('#measureBtn').onclick=measure; document.querySelector('#pauseBtn').onclick=togglePause; document.querySelector('#resetBtn').onclick=()=>location.reload();
 document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>{state.activeTab=b.dataset.tab;document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('active',x===b));renderPanel();}));
 
-function renderPanel(){const p=document.querySelector('#panel'); const t=world.time;
+function renderPanel(){const p=document.querySelector('#panel'); const t=world.time; const qObj=(state.selected?.userData.quantum?state.selected:world.objects.find(o=>o.userData.quantum)); const q=qObj?.userData.quantum;
   const tabs={
     classical:`<h3>CLASSICAL FIELD STATE</h3><div class="metric"><span>Gravity</span><b>9.81 m/s²</b></div><div class="metric"><span>Lab Temp</span><b>293.15 K</b></div><div class="metric"><span>Objects</span><b>${world.objects.length}</b></div><div class="spark"></div><small>Rigid-body / wave / optical approximations.</small>`,
-    quantum:`<h3>QUANTUM SUBSYSTEM</h3><div class="metric"><span>|ψ|² normalization</span><b>1.000</b></div><div class="metric"><span>Demo qubit</span><b>0.5 / 0.5</b></div><div class="meter"><i style="width:50%"></i></div><p>Localized quantum demo state only; not a universal wavefunction simulation.</p>`,
+    quantum:`<h3>QUANTUM SUBSYSTEM</h3><div class="metric"><span>|ψ|² normalization</span><b>${((q?.p0??1)+(q?.p1??0)).toFixed(3)}</b></div><div class="metric"><span>P(|0⟩) / P(|1⟩)</span><b>${(q?.p0??1).toFixed(3)} / ${(q?.p1??0).toFixed(3)}</b></div><div class="meter"><i style="width:${((q?.p1??0)*100).toFixed(1)}%"></i></div><p>Ideal two-level Rabi evolution; not a universal wavefunction simulation.</p>`,
     gravity:`<h3>GRAVITY</h3><div class="metric"><span>Model</span><b>Newtonian local</b></div><div class="metric"><span>Potential</span><b>${(-9.81*camera.position.y).toFixed(2)} J/kg</b></div><p>Relativistic and quantum-gravity solvers are planned modules, not claimed implemented here.</p>`,
     efmw:`<h3>EFMW EXPERIMENTAL FIELD</h3><div class="metric"><span>φ sample</span><b>${(Math.sin(t*.8)*.64).toFixed(3)}</b></div><div class="metric"><span>∇²φ sample</span><b>${(-Math.sin(t*.8)*.41).toFixed(3)}</b></div><div class="spark"></div><p>Explicit hypothesis layer. Current prototype uses a bounded demonstrator field until canonical units/couplings are frozen.</p>`
   }; p.innerHTML=tabs[state.activeTab];
@@ -112,7 +114,7 @@ renderPanel();
 let prev=performance.now();
 function animate(now){requestAnimationFrame(animate); const dt=Math.min((now-prev)/1000,.05);prev=now;
   if(!world.paused){world.time+=dt; for(const o of world.objects){
-    if(o.userData.physics?.type==='pendulum'){const p=o.userData.physics;const alpha=-(9.81/p.length)*Math.sin(p.theta)-p.damping*p.omega;p.omega+=alpha*dt;p.theta+=p.omega*dt;o.rotation.z=p.theta;}
+    if(o.userData.physics?.type==='pendulum'){const p=o.userData.physics;const alpha=-(9.81/p.length)*Math.sin(p.theta)-p.damping*p.omega;p.omega+=alpha*dt;p.theta+=p.omega*dt;o.userData.arm.rotation.z=p.theta;}
     if(o.userData.wave){o.children[1].scale.setScalar(1+0.25*Math.sin(world.time*o.userData.wave.frequency*6.283));}
     if(o.userData.chem){const c=o.userData.chem;const extent=Math.min(c.reactantA,c.rateConstant*c.reactantA*dt);c.reactantA-=extent;c.productB+=extent;c.temperature+=c.heatPerExtent*extent;c.temperature+=(293.15-c.temperature)*.015*dt;c.pressure=101.3*(c.temperature/293.15)*(1+.15*c.productB);}
     if(o.userData.electrical){const e=o.userData.electrical;e.current+=((e.voltage-e.resistance*e.current)/e.inductance)*dt;const mu0=4*Math.PI*1e-7;e.magneticField=mu0*(e.turns/e.length)*e.current;}
