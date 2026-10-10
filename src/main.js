@@ -127,4 +127,4 @@ function animate(now){requestAnimationFrame(animate); const dt=Math.min((now-pre
 }
 requestAnimationFrame(animate);
 
-function resize(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight,false)} addEventListener('resize',resize);resize();
+function resize(){const width=Math.max(1,canvas.clientWidth),height=Math.max(1,canvas.clientHeight);camera.aspect=width/height;camera.updateProjectionMatrix();renderer.setSize(width,height,false)} addEventListener('resize',resize);new ResizeObserver(resize).observe(document.querySelector('#app'));resize();

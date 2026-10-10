@@ -1,5 +1,18 @@
 # Archimedes Engine — Field-Native Lab
 
+<!-- ENUMINOUS-NETWORK:START -->
+**eNuminous network:** [All repositories](https://enuminous.github.io/EFMW/repositories.html) · [EFMW](https://enuminous.github.io/EFMW/) · [102 equations](https://github.com/enuminous/Monolithic_102_EFMW) · [165 triplets](https://enuminous.github.io/FieldSpace/) · [Zoo](https://enuminous.github.io/Tortoise/) · [Lean](https://enuminous.github.io/Aristotle-102-Monolithic-Lean/) · [Engine](https://enuminous.github.io/Archimedes-Engine/) · [Papers](https://enuminous.github.io/medium/papers-essays-index.html) · [Audit](https://github.com/enuminous/EFMW_Post156_Zoo_Audit/blob/main/portfolio/INTERLOCK_AUDIT.md)
+
+[Repository](https://github.com/enuminous/Archimedes-Field-Lab) · [Published page](https://enuminous.github.io/Archimedes-Field-Lab/)
+
+<details>
+<summary>Repository indexes (1)</summary>
+
+- [index.html](https://github.com/enuminous/Archimedes-Field-Lab/blob/main/index.html) · [Open page](https://enuminous.github.io/Archimedes-Field-Lab/index.html)
+
+</details>
+<!-- ENUMINOUS-NETWORK:END -->
+
 A playable prototype for a walk-around scientific puzzle/building sandbox combining established physics models with an explicitly separated EFMW experimental-field layer.
 
 ## What is implemented in v0.1
